@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2- Planificación (Matriz Interactiva) - Grupo 5</title>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --primary-dark: #172554;
+            --secondary-color: #3b82f6;
+            --accent-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-dark: #0f172a;
+            --border-color: #e2e8f0;
+            --highlight-blue: #eff6ff;
+            --highlight-border: #bfdbfe;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--accent-bg);
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-bottom: 4px solid var(--secondary-color);
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .alert-box {
+            background-color: var(--highlight-blue);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .alert-box p {
+            font-size: 0.95rem;
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        /* Tabs Interface */
+        .tabs-nav {
+            display: flex;
+            gap: 0.25rem;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .tab-btn {
+            background-color: #e2e8f0;
+            color: #64748b;
+            border: none;
+            outline: none;
+            padding: 1rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background-color: #cbd5e1;
+            color: var(--text-dark);
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Tab Content Panes */
+        .tab-panel {
+            display: none;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 12px 12px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 3rem;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography & Layout Elements inside sections */
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 0.75rem;
+        }
+
+        .literal-text {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+            .tab-panel {
+                padding: 1.5rem;
+            }
+        }
+
+        .data-block {
+            background-color: var(--accent-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: 100%;
+        }
+
+        .data-block h4 {
+            font-size: 1.15rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .data-block-highlight {
+            background-color: var(--highlight-blue);
+            border: 1px solid var(--highlight-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .data-block-highlight h4 {
+            font-size: 1.15rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        ul {
+            list-items-style: none;
+            padding-left: 1.25rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+
+        .grid-4col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .matrix-card {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 6px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .matrix-card h5 {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>2- PLANIFICACIÓN</h1>
+    <p>Dispositivo Tecnopedagógico Integrado — Esqueleto de Visualización y Navegación de Datos</p>
+</header>
+
+<div class="container">
+    
+    <div class="alert-box">
+        <p>💡 <strong>Nota del Dispositivo:</strong> Este entorno web interactivo reproduce el contenido de la matriz de planificación de forma exacta y fiel al documento formal, optimizando la lectura a través de módulos hipertextuales sin alterar una sola palabra de los ejes definidos por la cátedra.</p>
+    </div>
+
+    <!-- Navigation Tabs matching exactly the structure -->
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="changeTab(event, 'definiciones')">1. Primeras Definiciones</button>
+        <button class="tab-btn" onclick="changeTab(event, 'competencias')">2. Competencias y Objetivos</button>
+        <button class="tab-btn" onclick="changeTab(event, 'diseno')">3. Diseño y Secuencia</button>
+        <button class="tab-btn" onclick="changeTab(event, 'elementos')">4. Elementos Centrales</button>
+        <button class="tab-btn" onclick="changeTab(event, 'evaluacion')">5. Evaluación</button>
+    </div>
+
+    <!-- TAB 1: PRIMERAS DEFINICIONES -->
+    <div id="definiciones" class="tab-panel active">
+        <h3 class="section-title">Primeras definiciones: ¿Quiénes son nuestros estudiantes? ¿Qué sabemos de ellos/as?</h3>
+        <p class="literal-text">Estudiantes ingresantes al nivel superior (terciario/universitario) que comienzan carreras del campo de las Ciencias Sociales, la Comunicación y la Educación. Presentan dificultades frecuentes en comprensión lectora, interpretación de consignas, producción escrita y manejo de vocabulario académico. Suelen provenir de trayectorias escolares heterogéneas, con escasa experiencia en lectura crítica y en el uso académico de tecnologías digitales.</p>
+    </div>
+
+    <!-- TAB 2: COMPETENCIAS Y OBJETIVOS -->
+    <div id="competencias" class="tab-panel">
+        <h3 class="section-title">Competencias y objetivos: ¿Qué queremos que aprendan? ¿Cómo sabemos que han aprendido?</h3>
+        
+        <div class="grid-2col">
+            <div class="data-block">
+                <h4>Qué deben saber</h4>
+                <ul>
+                    <li>Identificar tesis, ideas principales y argumentos en textos académicos.</li>
+                    <li>Reconocer la macroestructura de un texto (introducción, desarrollo, conclusión).</li>
+                    <li>Comprender consignas académicas y paratextos.</li>
+                    <li>Detectar vocabulario técnico y construir definiciones.</li>
+                    <li>Diferenciar información relevante de secundaria.</li>
+                    <li>Producir síntesis breves y coherentes.</li>
+                    <li>Participar en prácticas de lectura social y colaborativa.</li>
+                    <li>Transformar información textual en formatos visuales.</li>
+                </ul>
+            </div>
+            
+            <div class="data-block">
+                <h4>Competencias globales/ habilidades</h4>
+                <p class="literal-text"><strong>Comprensión</strong> (lectura profunda y análisis). <strong>Pensamiento crítico</strong> (inferir, argumentar, comparar). <strong>Comunicación</strong> (oral, escrita y multimodal). <strong>Colaboración</strong> (trabajo en equipo, co-construcción). <strong>Creatividad</strong> (representación visual del texto). <strong>Carácter</strong> (autonomía, perseverancia, autorregulación). <strong>Alfabetización digital académica</strong> (uso de herramientas para leer, anotar, organizar y presentar información).</p>
+            </div>
+        </div>
+
+        <div class="grid-4col">
+            <div class="matrix-card">
+                <h5>Saber</h5>
+                <ul>
+                    <li>Reconocer la estructura y el propósito de un texto académico.</li>
+                    <li>Comprender consignas y vocabulario técnico.</li>
+                </ul>
+            </div>
+            <div class="matrix-card">
+                <h5>Saber hacer</h5>
+                <ul>
+                    <li>Anotar textos digitalmente (Perusall).</li>
+                    <li>Elaborar glosarios y síntesis (Google Docs)</li>
+                    <li>Construir mapas conceptuales colaborativos (Miro, Google Drawings)</li>
+                    <li>Crear presentaciones visuales (Canva/Genially).</li>
+                </ul>
+            </div>
+            <div class="matrix-card">
+                <h5>Saber actuar</h5>
+                <ul>
+                    <li>Resolver problemas de comprensión en comunidad.</li>
+                    <li>Participar activamente en actividades colaborativas.</li>
+                    <li>Integrar información de distintas fuentes y formatos.</li>
+                </ul>
+            </div>
+            <div class="matrix-card">
+                <h5>Saber ser</h5>
+                <ul>
+                    <li>Desarrollar autonomía lectora.</li>
+                    <li>Construir confianza en la lectura académica.</li>
+                    <li>Asumir un rol activo en la co-construcción del conocimiento.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="data-block-highlight">
+            <h4>Co-construcción</h4>
+            <p class="literal-text">Los estudiantes co-construyen: glosario, mapa conceptual, síntesis, presentación visual final.</p>
+        </div>
+    </div>
+
+    <!-- TAB 3: DISEÑO Y SECUENCIA -->
+    <div id="diseno" class="tab-panel">
+        <h3 class="section-title">Descripción general del diseño: ¿qué servirá como prueba de lo que están aprendiendo y han aprendido? Las evidencias: secuencia didáctica.</h3>
+        <p class="literal-text">La propuesta se organiza en una secuencia de 4 semanas y 8 actividades mediadas por tecnologías digitales. Las evidencias de aprendizaje serán las producciones parciales (anotaciones, mapa conceptual, glosario, síntesis) y el producto final: una presentación visual del texto trabajado en grupos.</p>
+        
+        <p class="literal-text"><strong>Secuencia de actividades:</strong> Padlet diagnóstico, Escape Room, nube de palabras, lectura guiada, anotación social, mapa conceptual colaborativo, glosario + síntesis (Docs) y presentación visual + coevaluación.</p>
+        
+        <div class="grid-2col">
+            <div class="data-block">
+                <h4>Puntos críticos</h4>
+                <ul>
+                    <li><strong>Para la enseñanza:</strong> heterogeneidad de trayectorias, baja alfabetización digital, dificultad para sostener la participación.</li>
+                    <li><strong>Para los estudiantes:</strong> textos densos, consignas complejas, uso de herramientas nuevas, trabajo colaborativo.</li>
+                </ul>
+            </div>
+            <div class="data-block">
+                <h4>Resultados/productos</h4>
+                <p class="literal-text">Anotaciones digitales, mapa conceptual, glosario técnico, síntesis escrita, presentación visual final y coevaluación.</p>
+            </div>
+        </div>
+
+        <div class="data-block-highlight">
+            <h4>Procesos que se propician</h4>
+            <p class="literal-text">Lectura profunda, análisis, identificación de ideas principales, organización de información, co-construcción, producción escrita y multimodal, reflexión metacognitiva y trabajo colaborativo.</p>
+        </div>
+    </div>
+
+    <!-- TAB 4: ELEMENTOS CENTRALES -->
+    <div id="elementos" class="tab-panel">
+        <h3 class="section-title">Elementos centrales del diseño</h3>
+        
+        <div class="grid-2col">
+            <div class="data-block">
+                <h4>Estrategias de enseñanza/ prácticas pedagógicas</h4>
+                <p class="literal-text">La propuesta combina estrategias de aprendizaje situado, lectura social, trabajo colaborativo y producción multimodal. Se priorizan prácticas que permitan partir de los conocimientos previos, acompañar la comprensión de textos académicos y promover la participación activa. Las actividades están diseñadas para atender la diversidad del grupo mediante consignas claras, apoyos progresivos, trabajo en pequeños grupos y uso de herramientas digitales accesibles que facilitan diferentes modos de participación.</p>
+            </div>
+            
+            <div class="data-block">
+                <h4>Posibles socios</h4>
+                <p class="literal-text">Los estudiantes actúan como co-constructores del conocimiento en actividades colaborativas como el mapa conceptual, el glosario y la presentación final. Los pares cumplen un rol clave en la coevaluación y en la resolución conjunta de problemas de comprensión. El docente interviene como mediador, orientando los procesos y ofreciendo andamiajes cuando es necesario. Las interacciones entre estudiantes fortalecen la comprensión, la autonomía y el sentido de comunidad.</p>
+            </div>
+        </div>
+
+        <div class="grid-2col" style="margin-top: 2rem;">
+            <div class="data-block">
+                <h4>Ambiente de aprendizaje</h4>
+                <p class="literal-text">El aprendizaje se desarrolla en un ambiente mixto completamente virtual, combinando encuentros sincrónicos a través de Zoom con actividades asincrónicas en entornos digitales. Las plataformas utilizadas (Padlet, Perusall, Miro, Google Docs, Canva, Genially) permiten sostener el trabajo colaborativo, la interacción entre pares y el seguimiento continuo. El acompañamiento docente se realiza mediante retroalimentación en las herramientas digitales, intervenciones durante las clases por Zoom y espacios de consulta para apoyar a quienes presentan mayores dificultades.</p>
+            </div>
+            
+            <div class="data-block">
+                <h4>Aprovechamiento digital y la precisión de herramientas</h4>
+                <p class="literal-text">Se utilizan herramientas digitales específicas en distintos momentos de la secuencia para amplificar y hacer visible el aprendizaje. Zoom se emplea para los encuentros sincrónicos, la interacción en tiempo real y la orientación docente. Padlet permite el diagnóstico inicial y la construcción de comunidad, el Escape Room interactivo alojado en plumas.pages.dev funciona como diagnóstico gamificado, Menti favorece la metacognición emocional, Perusall habilita la lectura social, Miro/Drawings facilita la organización visual del pensamiento, Google Docs sostiene la escritura colaborativa y Canva/Genially permiten la producción multimodal final. Estas tecnologías conectan a los estudiantes con el contenido, promueven la participación activa y aceleran procesos de análisis, organización y comunicación.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: EVALUACIÓN -->
+    <div id="evaluacion" class="tab-panel">
+        <h3 class="section-title">Evaluación de los estudiantes: del proceso y del producto</h3>
+        <p class="literal-text">La evaluación incluye instancias diagnósticas, formativas y sumativas. La evaluación diagnóstica se realiza en la primera semana mediante el Padlet inicial, el Escape Room interactivo y la nube de palabras en Menti, lo que permite identificar conocimientos previos, dificultades y emociones asociadas a la lectura académica. La evaluación formativa se desarrolla de manera continua a través de las anotaciones en Perusall, el mapa conceptual colaborativo, el glosario técnico y la síntesis en Google Docs, junto con la participación en las actividades sincrónicas por Zoom. La evaluación sumativa se concreta en la presentación visual final del texto, acompañada de una coevaluación con rúbrica y una autoevaluación de habilidades del siglo XXI. Esta variedad de instrumentos permite valorar tanto el proceso como el producto, integrando modos diversos de evaluación acordes a la propuesta.</p>
+    </div>
+
+</div>
+
+<footer>
+    <p>Estructura Curricular Literal e Inalterada — Asignatura: Nuevas Tecnologías — Universidad CAECE</p>
+</footer>
+
+<script>
+    function changeTab(evt, tabId) {
+        var i, tabPanel, tabButtons;
+        
+        tabPanel = document.getElementsByClassName("tab-panel");
+        for (i = 0; i < tabPanel.length; i++) {
+            tabPanel[i].style.display = "none";
+            tabPanel[i].classList.remove("active");
+        }
+        
+        tabButtons = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
+        
+        document.getElementById(tabId).style.display = "block";
+        document.getElementById(tabId).getElementById
+        document.getElementById(tabId).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+</script>
+</body>
+</html>
